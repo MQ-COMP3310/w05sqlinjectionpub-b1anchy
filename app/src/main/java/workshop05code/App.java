@@ -56,14 +56,18 @@ public class App {
             String line;
             int i = 1;
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
-                wordleDatabaseConnection.addValidWord(i, line);
+                if(!line.matches("[a-z]") && line.length() != 4) {
+                    logger.log(Level.SEVERE, "data.txt entry is invalid at line: " + i);
+                } else {
+                    logger.log(Level.FINE, line);
+                    wordleDatabaseConnection.addValidWord(i, line);
+                }
                 i++;
             }
 
         } catch (IOException e) {
             System.out.println("Not able to load . Sorry!");
-            System.out.println(e.getMessage());
+            logger.log(Level.WARNING,e.getMessage(), e);
             return;
         }
 
@@ -77,6 +81,7 @@ public class App {
                 System.out.println("You've guessed '" + guess+"'.");
                 if(!guess.matches("[a-z]") && guess.length() != 4) {
                     System.out.println("Unacceptable input.");
+                    logger.log(Level.WARNING, "unnacceptable input: " + guess);
                 }
                 else if (wordleDatabaseConnection.isValidWord(guess)) { 
                     System.out.println("Success! It is in the the list.\n");
